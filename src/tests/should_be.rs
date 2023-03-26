@@ -47,5 +47,9 @@ fn should_be_bool_fail_lvalue_false() {
 
     let result: Result<i32, String> = Ok(21i32);
 
-    result.should_be(21i32)
+    result.should_be(21i32);
+    result.should_be(Ok(21i32));
+    result.should_be(Err("foo".to_string()));
+
+    result.should_be_ok()
 }
