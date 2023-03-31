@@ -6,6 +6,3 @@ pub mod traits;
 
 pub use impls::*;
 pub use traits::*;
-
-#[cfg(test)]
-pub mod tests;

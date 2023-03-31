@@ -1,4 +1,4 @@
-use crate::{expected::Expected, ShouldEq, ShouldOrd, ShouldOption};
+use crate::{expected::Expected, ShouldEq, ShouldOrd, ShouldOption, caller_name::get_caller_name};
 use std::fmt::Debug;
 
 impl<T: PartialEq + Debug> ShouldEq<T> for Option<T> {
@@ -11,7 +11,7 @@ impl<T: PartialEq + Debug> ShouldEq<T> for Option<T> {
 
     fn should_not_be(&self, expected: impl Expected<T>) {
         match self {
-            Some(value) => value.should_be(expected.value()),
+            Some(value) => value.should_not_be(expected.value()),
             None => panic!(),
         }
     }
@@ -49,16 +49,85 @@ impl<T: PartialOrd + Debug> ShouldOrd<T> for Option<T> {
 
 impl<T: Debug> ShouldOption<T> for Option<T> {
     fn should_be_some(&self) {
+        let caller_name = get_caller_name().unwrap_or("UNKNOWN".to_string());
         match self {
             Some(_) => (),
-            None => panic!()
+            None => panic!("{} should be Some but was None", caller_name)
         }
     }
 
     fn should_be_none(&self) {
+        let caller_name = get_caller_name().unwrap_or("UNKNOWN".to_string());
         match self {
-            Some(_) => panic!(),
+            Some(_) => panic!("{} should be None but was {:?}", caller_name, self),
             None => ()
         }
+    }
+}
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn success() {
+        let option =  Some(14);
+
+        option.should_be(14);
+        option.should_not_be(12);
+        option.should_be_lt(15);
+        option.should_be_le(14);
+        option.should_be_gt(13);
+        option.should_be_ge(14);
+        option.should_be_some();
+    }
+
+    #[test]
+    #[should_panic(expected = "None::<i32> should be Some but was None")]
+    fn should_be_some_fail() {
+        None::<i32>.should_be_some()
+    }
+
+    #[test]
+    #[should_panic(expected = "Some(14) should be None but was Some(14)")]
+    fn should_be_none_fail() {
+        Some(14).should_be_none()
+    }
+
+    #[test]
+    #[should_panic(expected = "Some(14) should be 12 but was 14")]
+    fn should_be_fail() {
+        Some(14).should_be(12)
+    }
+
+    #[test]
+    #[should_panic(expected = "Some(14) should not be 14")]
+    fn should_not_be_fail() {
+        Some(14).should_not_be(14);
+    }
+
+    #[test]
+    #[should_panic(expected = "Some(14) should be greater than 15 but was 14")]
+    fn should_be_gt_fail() {
+        Some(14).should_be_gt(15)
+    }
+
+    #[test]
+    #[should_panic(expected = "Some(14) should be greater than or equal to 15 but was 14")]
+    fn should_be_ge_fail() {
+        Some(14).should_be_ge(15)
+    }
+
+    #[test]
+    #[should_panic(expected = "Some(14) should be less than 13 but was 14")]
+    fn should_be_lt_fail() {
+        Some(14).should_be_lt(13)
+    }
+
+    #[test]
+    #[should_panic(expected = "Some(14) should be less than or equal to 13 but was 14")]
+    fn should_be_le_fail() {
+        Some(14).should_be_le(13)
     }
 }

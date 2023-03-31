@@ -2,7 +2,7 @@
 catagories = ["development-tools::testing"]
 description = "Postfix assertion library for Rust"
 edition = "2021"
-keywords = ["assert", "assertion", "test", "testing"]
+keywords = ["assert", "assertion", "shouldly", "test", "testing"]
 license = "MIT"
 license-file = "LICENSE"
 name = "should"
