@@ -4,7 +4,6 @@ description = "Postfix assertion library for Rust"
 edition = "2021"
 keywords = ["assert", "assertion", "shouldly", "test", "testing"]
 license = "MIT"
-license-file = "LICENSE"
 name = "should"
 readme = "README.md"
 repository = "https://github.com/should-rs/should"

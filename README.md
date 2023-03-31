@@ -36,7 +36,7 @@ Implemented for `Result<T, E>`
  - `should_be_ok`
  - `should_be_err`
 
-Implemented for `Into<String>`
+Implemented for `str`
  - `should_start_with`
  - `should_not_start_with`
  - `should_end_with`
