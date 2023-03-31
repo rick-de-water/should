@@ -1,11 +1,13 @@
-pub mod eq;
+pub mod equal;
+pub mod empty;
 pub mod option;
-pub mod ord;
+pub mod ordered;
 pub mod result;
 pub mod start_end;
 
-pub use eq::*;
+pub use equal::*;
+pub use empty::*;
 pub use option::*;
-pub use ord::*;
+pub use ordered::*;
 pub use result::*;
 pub use start_end::*;

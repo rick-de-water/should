@@ -1,7 +1,7 @@
-use crate::{expected::Expected, ShouldEq, ShouldOrd, ShouldResult, caller_name::get_caller_name};
+use crate::{expected::Expected, ShouldBeEqual, ShouldBeOrdered, ShouldBeResult, caller_name::get_caller_name};
 use std::fmt::Debug;
 
-impl<T: PartialEq + Debug, E: Debug> ShouldEq<T> for Result<T, E> {
+impl<T: PartialEq + Debug, E: Debug> ShouldBeEqual<T> for Result<T, E> {
     fn should_be(&self, expected: impl Expected<T>) {
         match self {
             Ok(value) => value.should_be(expected.value()),
@@ -17,7 +17,7 @@ impl<T: PartialEq + Debug, E: Debug> ShouldEq<T> for Result<T, E> {
     }
 }
 
-impl<T: PartialOrd + Debug, E: Debug> ShouldOrd<T> for Result<T, E> {
+impl<T: PartialOrd + Debug, E: Debug> ShouldBeOrdered<T> for Result<T, E> {
     fn should_be_lt(&self, expected: impl Expected<T>) {
         match self {
             Ok(value) => value.should_be_lt(expected.value()),
@@ -47,7 +47,7 @@ impl<T: PartialOrd + Debug, E: Debug> ShouldOrd<T> for Result<T, E> {
     }
 }
 
-impl<T: Debug, E: Debug> ShouldResult<T> for Result<T, E> {
+impl<T: Debug, E: Debug> ShouldBeResult<T> for Result<T, E> {
     fn should_be_ok(&self) {
         let caller_name = get_caller_name().unwrap_or("UNKNOWN".to_string());
         match self {

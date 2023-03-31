@@ -1,6 +1,6 @@
-use crate::{ShouldStartEndString, caller_name::get_caller_name};
+use crate::{ShouldStartWithString, caller_name::get_caller_name};
 
-impl ShouldStartEndString for str {
+impl ShouldStartWithString for str {
     fn should_start_with(&self, expected: impl Into<String>) {
         let lhs: String = self.into();
         let rhs: String = expected.into();

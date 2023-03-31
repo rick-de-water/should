@@ -1,7 +1,7 @@
-use crate::{expected::Expected, caller_name::get_caller_name, ShouldEq, ShouldOrd};
+use crate::{expected::Expected, caller_name::get_caller_name, ShouldBeEqual, ShouldBeOrdered};
 use std::fmt::Debug;
 
-impl<T: PartialEq + Debug> ShouldEq<T> for T {
+impl<T: PartialEq + Debug> ShouldBeEqual<T> for T {
     fn should_be(&self, expected: impl Expected<T>) {
         let other = expected.value();
         let caller_name = get_caller_name().unwrap_or("UNKNOWN".to_string());
@@ -19,7 +19,7 @@ impl<T: PartialEq + Debug> ShouldEq<T> for T {
     }
 }
 
-impl<T: PartialOrd + Debug> ShouldOrd<T> for T {
+impl<T: PartialOrd + Debug> ShouldBeOrdered<T> for T {
     fn should_be_lt(&self, expected: impl Expected<T>) {
         let other = expected.value();
         let caller_name = get_caller_name().unwrap_or("UNKNOWN".to_string());
