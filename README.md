@@ -42,4 +42,8 @@ Implemented for `str`
  - `should_end_with`
  - `should_not_end_with`
 
+ Implemented for `T: IntoIterator`
+ - `should_be_empty`
+ - `should_not_be_empty`
+
 All asserted types are required to have implemented the `Debug` trait.
