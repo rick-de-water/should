@@ -1,4 +1,4 @@
-use crate::{expected::Expected, caller_name::get_caller_name, ShouldBeEqual, ShouldBeOrdered};
+use crate::{expected::Expected, caller_name::get_caller_name, ShouldBeEqual, ShouldBeOrdered, ShouldBeSame};
 use std::fmt::Debug;
 
 impl<T: PartialEq + Debug> ShouldBeEqual<T> for T {
@@ -53,6 +53,22 @@ impl<T: PartialOrd + Debug> ShouldBeOrdered<T> for T {
     }
 }
 
+impl<T> ShouldBeSame for T {
+    fn should_be_same(&self, other: &Self) {
+        if self as *const T != other as *const T {
+            let caller_name = get_caller_name().unwrap_or("UNKNOWN".to_string());
+            panic!("{caller_name} should be the same as {:p} but was {:p}", other, self)
+        }
+    }
+
+    fn should_not_be_same(&self, other: &Self) {
+        if self as *const T == other as *const T {
+            let caller_name = get_caller_name().unwrap_or("UNKNOWN".to_string());
+            panic!("{caller_name} should not be the same as {:p}", other)
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -94,6 +110,24 @@ mod tests {
         1.should_be_lt(2);
         1.should_be_le(2);
         1.should_be_le(1);
+
+        i1.should_be_same(&i1);
+        i2.should_be_same(&i2);
+        i3.should_be_same(&i3);
+        i4.should_be_same(&i4);
+
+        i1.should_not_be_same(&i2);
+        i2.should_not_be_same(&i3);
+        i3.should_not_be_same(&i4);
+        i4.should_not_be_same(&i1);
+        i1.should_not_be_same(&i3);
+        i2.should_not_be_same(&i4);
+        i3.should_not_be_same(&i1);
+        i4.should_not_be_same(&i2);
+        i1.should_not_be_same(&i4);
+        i2.should_not_be_same(&i1);
+        i3.should_not_be_same(&i2);
+        i4.should_not_be_same(&i3);
 
     }
 
