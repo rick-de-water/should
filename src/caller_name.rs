@@ -3,7 +3,7 @@ use backtrace::{Backtrace, BacktraceSymbol};
 use regex::Regex;
 
 pub(crate) fn get_caller_name() -> Option<String> {
-    let path_regex = Regex::new(r#"should(-[a-zA-Z0-9\.]+)?(\\|/)src"#).unwrap();
+    let path_regex = Regex::new(r#"should(-[a-zA-Z0-9\.]+)?(\\|/)src(\\|/)impls"#).unwrap();
     let backtrace = Backtrace::new();
     let frames = backtrace.frames();
     let mut caller_symbol: Option<&BacktraceSymbol> = None;
@@ -12,12 +12,14 @@ pub(crate) fn get_caller_name() -> Option<String> {
         if let Some(symbol) = frames[i].symbols().first() {
             if let Some(filename) = symbol.filename() {
                 if path_regex.is_match(&filename.to_string_lossy()) {
-                    caller_symbol = frames[i - 1].symbols().first();
+                    caller_symbol = frames[i + 1].symbols().first();
                     break;
                 }
             }
         }
     }
+
+    println!("{:?}", backtrace);
 
     if let Some(symbol) = caller_symbol {
         if let (Some(filename), Some(line)) = (symbol.filename(), symbol.lineno()) {
