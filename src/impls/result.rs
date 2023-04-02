@@ -3,64 +3,74 @@ use std::fmt::Debug;
 
 impl<T: PartialEq + Debug, E: Debug> ShouldBeEqual<T> for Result<T, E> {
     fn should_be(&self, expected: impl Expected<T>) {
+        let other = expected.value();
+        let caller_name = get_caller_name().unwrap_or("UNKNOWN".to_string());
         match self {
             Ok(value) => value.should_be(expected.value()),
-            Err(_) => panic!(),
+            Err(_) => panic!("{} should be {:?} but was {:?}", caller_name, other, self)
         }
     }
 
     fn should_not_be(&self, expected: impl Expected<T>) {
         match self {
             Ok(value) => value.should_not_be(expected.value()),
-            Err(_) => panic!(),
+            Err(_) => (),
         }
     }
 }
 
 impl<T: PartialOrd + Debug, E: Debug> ShouldBeOrdered<T> for Result<T, E> {
     fn should_be_lt(&self, expected: impl Expected<T>) {
+        let other = expected.value();
+        let caller_name = get_caller_name().unwrap_or("UNKNOWN".to_string());
         match self {
             Ok(value) => value.should_be_lt(expected.value()),
-            Err(_) => panic!(),
+            Err(_) => panic!("{} should be less than {:?} but was {:?}", caller_name, other, self)
         }
     }
 
     fn should_be_le(&self, expected: impl Expected<T>) {
+        let other = expected.value();
+        let caller_name = get_caller_name().unwrap_or("UNKNOWN".to_string());
         match self {
             Ok(value) => value.should_be_le(expected.value()),
-            Err(_) => panic!(),
+            Err(_) => panic!("{} should be less than or equal to {:?} but was {:?}", caller_name, other, self)
         }
     }
 
     fn should_be_gt(&self, expected: impl Expected<T>) {
+        let other = expected.value();
+        let caller_name = get_caller_name().unwrap_or("UNKNOWN".to_string());
         match self {
             Ok(value) => value.should_be_gt(expected.value()),
-            Err(_) => panic!(),
+            Err(_) => panic!("{} should be greater than {:?} but was {:?}", caller_name, other, self)
         }
     }
 
     fn should_be_ge(&self, expected: impl Expected<T>) {
+        let other = expected.value();
+        let caller_name = get_caller_name().unwrap_or("UNKNOWN".to_string());
         match self {
             Ok(value) => value.should_be_ge(expected.value()),
-            Err(_) => panic!(),
+            Err(_) => panic!("{} should be greater than or equal to {:?} but was {:?}", caller_name, other, self)
         }
     }
 }
 
-impl<T: Debug, E: Debug> ShouldBeResult<T> for Result<T, E> {
-    fn should_be_ok(&self) {
+impl<T: Debug, E: Debug> ShouldBeResult<T, E> for Result<T, E> {
+    fn should_be_ok(&self) -> &T {
         let caller_name = get_caller_name().unwrap_or("UNKNOWN".to_string());
         match self {
-            Ok(_) => (),
+            Ok(value) => value,
             Err(_) => panic!("{} should be Ok but was {:?}", caller_name, self)
         }
     }
 
-    fn should_be_err(&self) {
+    fn should_be_err(&self) -> &E {
         let caller_name = get_caller_name().unwrap_or("UNKNOWN".to_string());
         match self {
             Ok(_) => panic!("{} should be Err but was {:?}", caller_name, self),
-            Err(_) => ()
+            Err(value) => value
         }
     }
 }
@@ -80,24 +90,31 @@ mod tests {
         result.should_be_gt(13);
         result.should_be_ge(14);
         result.should_be_ok();
+        Err(()).should_not_be(12);
     }
 
     #[test]
     #[should_panic(expected = "Err::<i32, ()>(()) should be Ok but was Err(())")]
     fn should_be_ok_fail() {
-        Err::<i32, ()>(()).should_be_ok()
+        Err::<i32, ()>(()).should_be_ok();
     }
 
     #[test]
     #[should_panic(expected = "Ok::<i32, ()>(14) should be Err but was Ok(14)")]
     fn should_be_err_fail() {
-        Ok::<i32, ()>(14).should_be_err()
+        Ok::<i32, ()>(14).should_be_err();
     }
 
     #[test]
     #[should_panic(expected = "Ok::<i32, ()>(14) should be 12 but was 14")]
-    fn should_be_fail() {
-        Ok::<i32, ()>(14).should_be(12)
+    fn should_be_fail_ok() {
+        Ok::<i32, ()>(14).should_be(12);
+    }
+
+    #[test]
+    #[should_panic(expected = "Err(()) should be 12 but was Err(())")]
+    fn should_be_fail_err() {
+        Err(()).should_be(12);
     }
 
     #[test]
@@ -108,25 +125,49 @@ mod tests {
 
     #[test]
     #[should_panic(expected = "Ok::<i32, ()>(14) should be greater than 15 but was 14")]
-    fn should_be_gt_fail() {
-        Ok::<i32, ()>(14).should_be_gt(15)
+    fn should_be_gt_fail_ok() {
+        Ok::<i32, ()>(14).should_be_gt(15);
+    }
+
+    #[test]
+    #[should_panic(expected = "Err(()) should be greater than 15 but was Err(())")]
+    fn should_be_gt_fail_err() {
+        Err(()).should_be_gt(15);
     }
 
     #[test]
     #[should_panic(expected = "Ok::<i32, ()>(14) should be greater than or equal to 15 but was 14")]
-    fn should_be_ge_fail() {
-        Ok::<i32, ()>(14).should_be_ge(15)
+    fn should_be_ge_fail_ok() {
+        Ok::<i32, ()>(14).should_be_ge(15);
+    }
+
+    #[test]
+    #[should_panic(expected = "Err(()) should be greater than or equal to 15 but was Err(())")]
+    fn should_be_ge_fail_err() {
+        Err(()).should_be_ge(15);
     }
 
     #[test]
     #[should_panic(expected = "Ok::<i32, ()>(14) should be less than 13 but was 14")]
-    fn should_be_lt_fail() {
-        Ok::<i32, ()>(14).should_be_lt(13)
+    fn should_be_lt_fail_ok() {
+        Ok::<i32, ()>(14).should_be_lt(13);
+    }
+
+    #[test]
+    #[should_panic(expected = "Err(()) should be less than 13 but was Err(())")]
+    fn should_be_lt_fail_err() {
+        Err(()).should_be_lt(13);
     }
 
     #[test]
     #[should_panic(expected = "Ok::<i32, ()>(14) should be less than or equal to 13 but was 14")]
-    fn should_be_le_fail() {
-        Ok::<i32, ()>(14).should_be_le(13)
+    fn should_be_le_fail_ok() {
+        Ok::<i32, ()>(14).should_be_le(13);
+    }
+
+    #[test]
+    #[should_panic(expected = "Err(()) should be less than or equal to 13 but was Err(())")]
+    fn should_be_le_fail_err() {
+        Err(()).should_be_le(13);
     }
 }
