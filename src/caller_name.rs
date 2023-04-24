@@ -19,8 +19,6 @@ pub(crate) fn get_caller_name() -> Option<String> {
         }
     }
 
-    println!("{:?}", backtrace);
-
     if let Some(symbol) = caller_symbol {
         if let (Some(filename), Some(line)) = (symbol.filename(), symbol.lineno()) {
             if let Ok(source) = fs::read_to_string(filename) {
