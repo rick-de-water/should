@@ -5,6 +5,8 @@
 
 should is a postfix assertion library for Rust, heavily inspired by [Shouldly](https://docs.shouldly.org/). It aims to make writing assertions feel more natural, while also providing clearer error messages.
 
+## Example
+
 ```rust
 use should::*;
 
@@ -17,11 +19,10 @@ fn test_multiply() {
     multiply(3, 5).should_be(15);
 }
 ```
-```
-panicked at 'multiply(3, 5) should be 15 but was 8'
-```
 
-# Assertions
+> panicked at 'multiply(3, 5) should be 15 but was 8'
+
+## Assertions
 Implemented for `T: PartialEq` as well as `Ok(T)` and `Some(T)`
  - `should_be`
  - `should_not_be`
