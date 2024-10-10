@@ -1,3 +1,5 @@
+#![doc = include_str!("../README.md")]
+
 pub(crate) mod caller_name;
 pub(crate) mod expected;
 

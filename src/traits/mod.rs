@@ -1,10 +1,10 @@
-pub mod equal;
-pub mod empty;
-pub mod option;
-pub mod ordered;
-pub mod result;
-pub mod same;
-pub mod start_end;
+mod equal;
+mod empty;
+mod option;
+mod ordered;
+mod result;
+mod same;
+mod start_end;
 
 pub use equal::*;
 pub use empty::*;

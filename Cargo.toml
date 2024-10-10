@@ -1,16 +1,17 @@
 [package]
+authors = ["Rick de Water"]
 catagories = ["development-tools::testing"]
 description = "Postfix assertion library for Rust"
+documentation = "https://docs.rs/should"
 edition = "2021"
 keywords = ["assert", "assertion", "shouldly", "test", "testing"]
-license = "MIT"
+license = "MIT OR Apache-2.0"
 name = "should"
 readme = "README.md"
-repository = "https://github.com/should-rs/should"
-version = "0.4.2"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+repository = "https://github.com/rick-de-water/should"
+rust-version = "1.65"
+version = "0.5.0"
 
 [dependencies]
 backtrace = "0.3"
-regex = "1.7.3"
+regex = "1.11"
