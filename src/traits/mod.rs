@@ -1,3 +1,4 @@
+mod approx_equal;
 mod equal;
 mod empty;
 mod option;
@@ -6,6 +7,7 @@ mod result;
 mod same;
 mod start_end;
 
+pub use approx_equal::*;
 pub use equal::*;
 pub use empty::*;
 pub use option::*;
